@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="{{ url_for('static', filename='img/logo.png') }}" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UVA Insight</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+</head>
+
+<style>
+  /* Fondo animado */
+  .background {
+    background: linear-gradient(to bottom, #2b6cb0, #63b3ed);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    animation: sky-animation 20s ease-in-out infinite;
+  }
+
+  @keyframes sky-animation {
+    0% { background: linear-gradient(to bottom, #2b6cb0, #63b3ed); }
+    50% { background: linear-gradient(to bottom, #f6ad55, #fbd38d); }
+    100% { background: linear-gradient(to bottom, #2b6cb0, #63b3ed); }
+  }
+
+  /* Sol animado */
+  .sun {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 0, 0.8), rgba(255, 165, 0, 0.6));
+    animation: sun-animation 10s ease-in-out infinite;
+  }
+
+  @keyframes sun-animation {
+    0%, 100% { top: 10%; opacity: 1; }
+    50% { top: 20%; opacity: 0.7; }
+  }
+
+  /* Tierra giratoria */
+  .earth {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    background: #2c7a7b;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
+    animation: earth-spin 60s linear infinite;
+  }
+
+  @keyframes earth-spin {
+    0% { transform: translateX(-50%) rotate(0deg); }
+    100% { transform: translateX(-50%) rotate(360deg); }
+  }
+
+  /* Nubes animadas */
+  .clouds, .clouds-2, .clouds-3 {
+    position: absolute;
+    background: url('https://cdn.pixabay.com/photo/2016/02/19/10/41/clouds-1209593_960_720.png') repeat-x;
+    animation: cloud-animation 40s linear infinite;
+  }
+
+  .clouds { top: 30%; left: 50%; width: 80%; height: 20%; animation-duration: 40s; }
+  .clouds-2 { top: 35%; left: 50%; width: 70%; height: 15%; animation-duration: 45s; }
+  .clouds-3 { top: 45%; left: 50%; width: 60%; height: 10%; animation-duration: 50s; }
+
+  @keyframes cloud-animation {
+    0% { left: -100%; }
+    100% { left: 100%; }
+  }
+
+  /* Estilo general del contenido */
+  .content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    color: white;
+    padding-top: 20vh;
+  }
+
+  .content h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    text-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  }
+
+  .content p {
+    font-size: 1.25rem;
+    margin-top: 1rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    text-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Navbar mejorado */
+  nav {
+    background-color: #4a5568;
+  }
+
+  nav a {
+    color: #f7fafc;
+    font-size: 1.2rem;
+    transition: color 0.3s;
+  }
+
+  nav a:hover {
+    color: #ecc94b;
+  }
+</style>
+<body class="bg-gray-100 font-sans leading-normal tracking-wide">
+  
+  <!-- Navbar -->
+  <nav class="bg-gradient-to-r from-yellow-400 via-orange-300 to-red-400 shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 items-center">
+        <!-- Logo / Marca -->
+        <div class="flex-shrink-0 flex items-center text-white font-bold text-xl">
+          <svg class="w-8 h-8 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364-6.364l-1.414 1.414M6.05 17.95l-1.414 1.414m0-13.435L6.05 6.05m13.435 13.435l-1.414-1.414M12 8a4 4 0 100 8 4 4 0 000-8z"/>
+          </svg>
+          UVA Insight
+        </div>
+
+        <!-- Enlaces -->
+        <div class="hidden md:flex space-x-8 text-white font-medium">
+          <a href="{{ url_for('index') }}" class="hover:text-yellow-100 transition duration-300 ease-in-out">Inicio</a>
+          <a href="{{ url_for('diarios') }}" class="hover:text-yellow-100 transition duration-300 ease-in-out">Datos Diarios</a>
+          <a href="{{ url_for('explicacion') }}" class="hover:text-yellow-100 transition duration-300 ease-in-out">Explicacion</a>
+
+        </div>
+        
+        <!-- Menú móvil -->
+        <div class="md:hidden">
+          <button id="menu-btn" class="text-white focus:outline-none focus:ring-2 focus:ring-white">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menú móvil -->
+    <div id="mobile-menu" class="md:hidden hidden px-4 pb-4 bg-yellow-100 text-orange-900 font-semibold space-y-2">
+      <a href="{{ url_for('index') }}" class="hover:text-yellow-100 transition duration-300 ease-in-out">Inicio</a>
+
+      <a href="{{ url_for('diarios') }}" class="hover:text-yellow-100 transition duration-300 ease-in-out">Datos Diarios</a>
+      <a href="{{ url_for('explicacion') }}" class="hover:text-yellow-100 transition duration-300 ease-in-out">Explicacion</a>
+    </div>
+
+    <script>
+      const menuBtn = document.getElementById("menu-btn");
+      const mobileMenu = document.getElementById("mobile-menu");
+
+      menuBtn.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden");
+      });
+    </script>
+  </nav>
+
+<!-- Contenedor principal centrado -->
+<div class="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 py-12 px-6">
+  <div class="bg-white p-10 rounded-2xl shadow-2xl w-full max-w-4xl space-y-10">
+
+    <!-- Título -->
+    <h1 class="text-4xl font-extrabold text-gray-900 text-center">Sube el archivo CSV por día</h1>
+    <h2 class="text-2xl font-extrabold text-gray-900 text-center">Cargar Archivo CSV</h2>
+
+    <!-- Formulario de carga -->
+    <form action="{{ url_for('diarios') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+      {% if error %}
+        <p class="text-red-600 text-sm text-center font-medium">{{ error }}</p>
+      {% endif %}
+      <div>
+        <label for="file" class="block text-sm font-semibold text-gray-700 mb-1">Selecciona un archivo CSV:</label>
+        <input type="file" name="file" accept=".csv" required class="block w-full border border-gray-300 rounded-xl shadow-sm px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+      </div>
+      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl shadow transition duration-300">Cargar</button>
+    </form>
+
+    {% if accuracy %}
+    <!-- Resultados del modelo -->
+    <div class="bg-white p-8 rounded-xl shadow-xl space-y-6 border border-gray-100">
+      <h2 class="text-2xl font-bold text-center text-gray-800">Resultados del Modelo</h2>
+
+      <p class="text-center text-gray-700">Precisión del modelo: <strong>{{ accuracy | round(4) }}</strong></p>
+
+      <div class="text-center">
+        <h3 class="font-semibold text-gray-800 mt-4">Matriz de Confusión</h3>
+        <div class="flex justify-center">
+          <img src="data:image/png;base64,{{ img_str }}" class="mt-2 mb-4 w-2/3 rounded-lg border">
+        </div>
+        <p class="text-gray-600 whitespace-pre-line">{{ confusion_explained }}</p>
+      </div>
+
+      <div>
+        <h3 class="font-semibold text-center text-gray-800">Resumen General</h3>
+        <ul class="list-disc list-inside text-gray-700 text-center space-y-1">
+          <li><strong>{{ count_high }}</strong> días con alta radiación UVA</li>
+          <li><strong>{{ count_low }}</strong> días con baja radiación UVA</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-semibold text-center text-gray-800">Coeficientes del Modelo</h3>
+        <ul class="text-gray-700 list-disc list-inside text-center space-y-1">
+          {% for var, coef in coefs.items() %}
+            <li>{{ var }}: {{ coef | round(4) }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-semibold text-center text-gray-800">Porcentaje de Días con Alta Radiación por Año</h3>
+        <div class="overflow-x-auto mt-3">
+          <table class="table-auto w-full border-collapse text-sm shadow rounded-xl">
+            <thead>
+              <tr class="bg-blue-100 text-blue-900">
+                <th class="border px-4 py-2">Año</th>
+                <th class="border px-4 py-2">% Alta Radiación</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in yearly_summary %}
+              <tr class="hover:bg-blue-50">
+                <td class="border px-4 py-2">{{ row['Año'] }}</td>
+                <td class="border px-4 py-2">{{ row['Porcentaje de Alta Radiación'] | round(2) }}%</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Formulario de predicción -->
+    {% if accuracy %}
+    <div class="bg-white p-8 rounded-xl shadow-xl space-y-6 border border-gray-100">
+      <h2 class="text-2xl font-bold text-center text-gray-800">Hacer Predicción por Fecha</h2>
+      <form action="{{ url_for('predict_uv') }}" method="POST" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div>
+          <label for="day" class="block text-sm font-semibold text-gray-700 mb-1">Día:</label>
+          <input type="number" name="day" min="1" max="31" required class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+        </div>
+        <div>
+          <label for="month" class="block text-sm font-semibold text-gray-700 mb-1">Mes:</label>
+          <input type="number" name="month" min="1" max="12" required class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+        </div>
+        <div>
+          <label for="year" class="block text-sm font-semibold text-gray-700 mb-1">Año:</label>
+          <input type="number" name="year" required class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+        </div>
+        <div>
+          <label for="hour" class="block text-sm font-semibold text-gray-700 mb-1">Hora:</label>
+          <input type="number" name="hour" min="0" max="23" required class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+        </div>
+        <div class="md:col-span-4">
+          <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-xl shadow transition duration-300"> Predecir Radiación</button>
+        </div>
+      </form>
+    </div>
+    {% endif %}
+
+    <!-- Resultado de la predicción -->
+    {% if prediction %}
+    <div class="bg-blue-50 p-8 rounded-xl shadow-lg">
+      <h2 class="text-2xl font-bold text-center text-blue-800 mb-4">Predicción para Fecha y Hora Específica</h2>
+      <p class="text-gray-800 text-center text-lg">
+        La radiación UVA pronosticada para el <strong>{{ prediction.fecha }}</strong> a las <strong>{{ prediction.hour }}:00</strong> es: 
+        <span class="font-semibold {% if prediction.prediction == 'Alta' %}text-red-600{% else %}text-green-600{% endif %}">
+          {{ prediction.prediction }}
+        </span>
+      </p>
+      <p class="text-center text-gray-700 mt-2">
+        {{ prediction.proba }} - {{ prediction.enfermedad_piel }}
+      </p>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UVA Insight</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+  <link rel="icon" href="{{ url_for('static', filename='img/logo.png') }}" type="image/png">
+  <style>
+    /* Fondo animado */
+    .background {
+      background: linear-gradient(to bottom, #2b6cb0, #63b3ed);
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      animation: sky-animation 20s ease-in-out infinite;
+    }
+
+    @keyframes sky-animation {
+      0% { background: linear-gradient(to bottom, #2b6cb0, #63b3ed); }
+      50% { background: linear-gradient(to bottom, #f6ad55, #fbd38d); }
+      100% { background: linear-gradient(to bottom, #2b6cb0, #63b3ed); }
+    }
+
+    /* Sol animado */
+    .sun {
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 0, 0.8), rgba(255, 165, 0, 0.6));
+      animation: sun-animation 10s ease-in-out infinite;
+    }
+
+    @keyframes sun-animation {
+      0%, 100% { top: 10%; opacity: 1; }
+      50% { top: 20%; opacity: 0.7; }
+    }
+
+    /* Tierra giratoria */
+    .earth {
+      position: absolute;
+      top: 35%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: #2c7a7b;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
+      animation: earth-spin 60s linear infinite;
+    }
+
+    @keyframes earth-spin {
+      0% { transform: translateX(-50%) rotate(0deg); }
+      100% { transform: translateX(-50%) rotate(360deg); }
+    }
+
+    /* Nubes animadas */
+    .clouds, .clouds-2, .clouds-3 {
+      position: absolute;
+      background: url('https://cdn.pixabay.com/photo/2016/02/19/10/41/clouds-1209593_960_720.png') repeat-x;
+      animation: cloud-animation 40s linear infinite;
+    }
+
+    .clouds { top: 30%; left: 50%; width: 80%; height: 20%; animation-duration: 40s; }
+    .clouds-2 { top: 35%; left: 50%; width: 70%; height: 15%; animation-duration: 45s; }
+    .clouds-3 { top: 45%; left: 50%; width: 60%; height: 10%; animation-duration: 50s; }
+
+    @keyframes cloud-animation {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    /* Estilo general del contenido */
+    .content {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      color: white;
+      padding-top: 20vh;
+    }
+
+    .content h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      text-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .content p {
+      font-size: 1.25rem;
+      margin-top: 1rem;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      text-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Navbar mejorado */
+    nav {
+      background-color: #4a5568;
+    }
+
+    nav a {
+      color: #f7fafc;
+      font-size: 1.2rem;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: #ecc94b;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-wide">
+  
+  
+  <!-- Navbar -->
+  <nav class="bg-gradient-to-r from-yellow-400 via-orange-300 to-red-400 shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 items-center">
+        <!-- Logo / Marca -->
+        <div class="flex-shrink-0 flex items-center text-white font-bold text-xl">
+          <svg class="w-8 h-8 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364-6.364l-1.414 1.414M6.05 17.95l-1.414 1.414m0-13.435L6.05 6.05m13.435 13.435l-1.414-1.414M12 8a4 4 0 100 8 4 4 0 000-8z"/>
+          </svg>
+          UVA Insight
+        </div>
+
+        <!-- Enlaces -->
+        <div class="hidden md:flex space-x-8 text-white font-medium">
+          <a href="{{ url_for('index') }}" class="hover:text-yellow-100 transition duration-300 ease-in-out">Inicio</a>
+          <a href="{{ url_for('diarios') }}" class="hover:text-yellow-100 transition duration-300 ease-in-out">Datos Diarios</a>
+          <a href="{{ url_for('explicacion') }}" class="hover:text-yellow-100 transition duration-300 ease-in-out">Explicacion</a>
+
+        </div>
+        
+        <!-- Menú móvil -->
+        <div class="md:hidden">
+          <button id="menu-btn" class="text-white focus:outline-none focus:ring-2 focus:ring-white">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menú móvil -->
+    <div id="mobile-menu" class="md:hidden hidden px-4 pb-4 bg-yellow-100 text-orange-900 font-semibold space-y-2">
+      <a href="{{ url_for('index') }}" class="hover:text-yellow-100 transition duration-300 ease-in-out">Inicio</a>
+      <a href="{{ url_for('diarios') }}" class="hover:text-yellow-100 transition duration-300 ease-in-out">Datos Diarios</a>
+      <a href="{{ url_for('explicacion') }}" class="hover:text-yellow-100 transition duration-300 ease-in-out">Explicacion</a>
+    </div>
+
+    <script>
+      const menuBtn = document.getElementById("menu-btn");
+      const mobileMenu = document.getElementById("mobile-menu");
+
+      menuBtn.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden");
+      });
+    </script>
+  </nav>
+
+  <!-- Elementos animados -->
+  <div class="background"></div>
+  <div class="sun"></div>
+  <div class="earth"></div>
+  <div class="clouds"></div>
+  <div class="clouds-2"></div>
+  <div class="clouds-3"></div>
+
+  <!-- Contenido Principal -->
+  <section class="content">
+    <h1>¿Qué son los Rayos UVA?</h1>
+    <p>Explora los efectos, beneficios y riesgos de la radiación ultravioleta tipo A, una de las formas de energía solar más influyentes en la vida humana.</p>
+  </section>
+
+  <!-- Sección Explicativa -->
+  <section class="bg-white text-gray-800 py-20 px-6 md:px-16 space-y-16">
+
+    <!-- Qué son los Rayos UVA -->
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <img src="https://www.ucr.ac.cr/medios/fotos/2019/dsc_70445c6203094d851.jpg" alt="Rayos UVA ilustración" class="rounded-lg shadow-xl hover:scale-105 transition-transform duration-300 ease-in-out">
+      <div>
+        <h2 class="text-3xl font-semibold text-gray-700 mb-4">¿Qué son los rayos UVA?</h2>
+        <p class="text-lg leading-relaxed text-gray-600">
+          Los rayos UVA forman parte de la radiación ultravioleta que emite el sol. Son invisibles al ojo humano, pero penetran profundamente en la piel, atravesando incluso las capas de nubes y el vidrio. Representan la mayoría de la radiación UV que nos alcanza a diario.
+        </p>
+      </div>
+    </div>
+
+    <!-- Diferencias -->
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div>
+        <h2 class="text-3xl font-semibold text-gray-700 mb-4">Tipos de rayos UV</h2>
+        <ul class="list-disc list-inside text-lg space-y-2 text-gray-600">
+          <li><strong>UVA:</strong> Penetran más profundo, envejecen la piel, y están presentes todo el día.</li>
+          <li><strong>UVB:</strong> Más energéticos, causan quemaduras solares y contribuyen al cáncer de piel.</li>
+          <li><strong>UVC:</strong> Extremadamente peligrosos, pero bloqueados por la capa de ozono.</li>
+        </ul>
+      </div>
+      <img src="https://www.antena3.com/newa3flash/modulos_blancos/uploader/uploads/radiaciones-solares.jpg" alt="Tipos de rayos UV" class="rounded-lg shadow-xl hover:scale-105 transition-transform duration-300 ease-in-out">
+    </div>
+
+    <!-- Efectos y beneficios -->
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <img src="https://img.freepik.com/vector-premium/concepto-proteccion-solar-ultravioleta-radiacion-ultravioleta-personajes-escudos-reflejan-luz-sol-paseo-familiar-paraguas-mujer-bronceada-chaise-longue-cuidado-salud-piel-ilustracion-vector-gente-dibujos-animados_87771-12393.jpg" alt="Efectos en la piel" class="rounded-lg shadow-xl hover:scale-105 transition-transform duration-300 ease-in-out">
+      <div>
+        <h2 class="text-3xl font-semibold text-gray-700 mb-4">Efectos en la salud</h2>
+        <p class="text-lg leading-relaxed text-gray-600">
+          La exposición prolongada a los rayos UVA puede dañar las células de la piel y acelerar el envejecimiento prematuro. Sin embargo, en dosis controladas, la radiación UVA es beneficiosa para la síntesis de vitamina D, vital para la salud ósea y el sistema inmunológico.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bg-gradient-to-r from-yellow-400 via-orange-300 to-red-400 text-white py-6">
+    <p class="text-center">&copy; 2025 UVA Insight - Todos los derechos reservados</p>
+  </footer>
+</body>
+</html>
